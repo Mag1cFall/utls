@@ -179,6 +179,7 @@ func (uconn *UConn) uLoadSession() error {
 		if session == nil || err != nil {
 			return err
 		}
+		uconn.HandshakeState.Hello.EarlyData = hello.earlyData
 		if session.version == VersionTLS12 {
 			// We use the session ticket extension for tls 1.2 session resumption
 			uconn.sessionController.initSessionTicketExt(session, hello.sessionTicket)
@@ -493,7 +494,7 @@ func (uconn *UConn) extensionsList() []uint16 {
 
 func (uconn *UConn) computeAndUpdateOuterECHExtension(inner *clientHelloMsg, ech *echClientContext, useKey bool) error {
 	// This function is mostly copied from
-	// https://github.com/refraction-networking/utls/blob/e430876b1d82fdf582efc57f3992d448e7ab3d8a/ech.go#L408
+	// https://github.com/Mag1cFall/utls/blob/e430876b1d82fdf582efc57f3992d448e7ab3d8a/ech.go#L408
 	var encapKey []byte
 	if useKey {
 		encapKey = ech.encapsulatedKey
